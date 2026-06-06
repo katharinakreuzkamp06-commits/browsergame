@@ -1,5 +1,5 @@
 async function ladeBuecher() {
-  const res = await fetch("http://localhost:3000/")
+  const res = await fetch("/api/books");
   return res.json();
 }
 
@@ -26,7 +26,7 @@ async function tabelleAufbauen() {
     });
 
     select.addEventListener("change", async () => {
-      await fetch("http://localhost:3000/updateStatus", {
+      await fetch("/api/updateStatus", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -38,6 +38,7 @@ async function tabelleAufbauen() {
 
     tdStatus.appendChild(select);
     tr.append(tdTitel, tdStatus);
+    tbody.append(tdTitel, tdStatus);
     tbody.appendChild(tr);
   });
 }
