@@ -14,9 +14,15 @@ function col() {
   return client.db("buecherregal").collection("buecher");
 }
 
-// API
+// 🔥 FRONTEND (index.html wird geladen)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// 🔥 API ROUTES
 app.get("/api/books", async (req, res) => {
-  res.json(await col().find().toArray());
+  const data = await col().find({}).toArray();
+  res.json(data);
 });
 
 app.post("/api/addBook", async (req, res) => {
@@ -24,15 +30,28 @@ app.post("/api/addBook", async (req, res) => {
   res.json({ ok: true });
 });
 
-// FRONTEND ROUTE
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+app.post("/api/deleteBook", async (req, res) => {
+  await col().deleteOne({ _id: new mongodb.ObjectId(req.body.id) });
+  res.json({ ok: true });
 });
 
-// IMPORTANT: Render PORT FIX
-const PORT = process.env.PORT;
-app.listen(PORT, "0.0.0.0", async () => {
+app.post("/api/updateStatus", async (req, res) => {
+  await col().updateOne(
+    { _id: new mongodb.ObjectId(req.body.id) },
+    { $set: { gelesen: req.body.gelesen } }
+  );
+  res.json({ ok: true });
+});
+
+// 🔥 START SERVER (WICHTIG für Render)
+async function start() {
   await client.connect();
   console.log("MongoDB verbunden");
-  console.log("Server läuft auf Port", PORT);
-});
+
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log("Server läuft auf Port", PORT);
+  });
+}
+
+start();
