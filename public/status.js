@@ -1,5 +1,5 @@
 async function ladeBuecher() {
-  const res = await fetch("/api/books");
+  const res = await fetch("/");
   return res.json();
 }
 
