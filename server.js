@@ -14,6 +14,12 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
+});
+
+app.use(express.static(__dirname + "/public"));
+
 const mongoClient = new mongodb.MongoClient(process.env.MONGO_URL);
 
 async function startServer() {
