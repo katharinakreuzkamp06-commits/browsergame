@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const http = require("http");
 const mongodb = require("mongodb");
 require("dotenv").config();
@@ -7,7 +8,11 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 const mongoClient = new mongodb.MongoClient(process.env.MONGO_URL);
 
