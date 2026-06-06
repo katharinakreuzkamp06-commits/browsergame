@@ -1,68 +1,38 @@
 const express = require("express");
 const path = require("path");
-const http = require("http");
 const mongodb = require("mongodb");
 require("dotenv").config();
 
 const app = express();
-const server = http.createServer(app);
 
 app.use(express.json());
-
-// 🔥 WICHTIG: static muss VOR API stehen
 app.use(express.static(path.join(__dirname, "public")));
 
-const mongoClient = new mongodb.MongoClient(process.env.MONGO_URL);
+const client = new mongodb.MongoClient(process.env.MONGO_URL);
 
-function collection() {
-  return mongoClient.db("buecherregal").collection("buecher");
+function col() {
+  return client.db("buecherregal").collection("buecher");
 }
 
-// 🔥 ROOT MUSS HTML liefern
+// API
+app.get("/api/books", async (req, res) => {
+  res.json(await col().find().toArray());
+});
+
+app.post("/api/addBook", async (req, res) => {
+  await col().insertOne(req.body);
+  res.json({ ok: true });
+});
+
+// FRONTEND ROUTE
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// API ROUTES
-app.get("/api/books", async (req, res) => {
-  const data = await collection().find({}).toArray();
-  res.json(data);
-});
-
-app.post("/api/addBook", async (req, res) => {
-  await collection().insertOne(req.body);
-  res.json({ ok: true });
-});
-
-app.post("/api/deleteBook", async (req, res) => {
-  await collection().deleteOne({
-    _id: new mongodb.ObjectId(req.body.id)
-  });
-  res.json({ ok: true });
-});
-
-app.post("/api/deleteByTitle", async (req, res) => {
-  await collection().deleteOne({
-    titel: { $regex: new RegExp(`^${req.body.titel}$`, "i") }
-  });
-  res.json({ ok: true });
-});
-
-app.post("/api/updateStatus", async (req, res) => {
-  await collection().updateOne(
-    { _id: new mongodb.ObjectId(req.body.id) },
-    { $set: { gelesen: req.body.gelesen } }
-  );
-  res.json({ ok: true });
-});
-
-async function startServer() {
-  await mongoClient.connect();
+// IMPORTANT: Render PORT FIX
+const PORT = process.env.PORT;
+app.listen(PORT, "0.0.0.0", async () => {
+  await client.connect();
   console.log("MongoDB verbunden");
-
-  server.listen(process.env.PORT || 3000, () => {
-    console.log("Server läuft");
-  });
-}
-
-startServer();
+  console.log("Server läuft auf Port", PORT);
+});
