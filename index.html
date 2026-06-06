@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+
+  <head>
+    <meta charset="utf-8" /> <!-- Zeichenkodierung-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Katharina Kreuzkamp" />
+    <title>K's Bücherregal</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div> 
+        <h1>K's Bücherregal</h1>
+        </div>
+      </header>
+
+    <main>
+      <div class="scores">
+      <p>Bücheranzahl: 0</p>
+      <P>Gelesene Bücher: 0</P>
+      <p>Zu lesende Bücher: 0</p>
+      </div>
+
+      <div id="regalWrapper">
+      <img id="regalBild" src="Regal.png" alt="Regal" title="Regal" />
+      <div id="regalBuecher">
+      </div>
+      </div>
+
+      <div class="leiste">
+
+       <button class="neuesBuch" >
+       <img
+        src="Neues Buch.png"
+        alt="Buch hinzufügen"
+        title="Neues Buch"
+        />
+        </button>
+
+        <button class="buchLoeschen">
+           <img
+        src="Buch löschen.png"
+        alt="Buch löschen"
+        title="Buch löschen"
+        />
+        </button>
+
+        <button class="status" type="button">
+          <img
+        src="Status ändern.png"
+        alt="Stantus ändern"
+        title="Status ändern"
+        />
+        </button>
+
+      <div id="hinzufügen">
+        <form id="hinzufuegenForm">
+          <p>Bitte Titel eingeben: </p>
+          <input type="text" id="buchTitel" placeholder="Buchtitel bitte eingeben"
+          required />
+          <p>Gelesen: </p>
+          <select id="buchGelesen">
+          <option value="nein">Nein</option>
+          <option value="ja">Ja</option>
+          </select> </br>
+          <div class="popup-buttons">
+            <button type="submit">Speichern</button>
+          <button type="button" id="btnSchliessen">Schließen</button>
+          </div>
+          </form>
+        </div>
+
+        <div id="loeschen">
+          <form id="loeschenForm">
+          <p>Bitte Titel zum löschen eingeben: </p>
+          <input type="text" id="buchTitelLoeschen" placeholder="Buchtitel bitte eingeben"/> </br>
+          <div class="popup-buttons">
+          <button type="submit">Löschen</button>
+          <button type="button" id="btnLoeschenSchliessen">Schließen</button>
+          </div>
+          </form>
+        </div>
+          
+        </div>
+
+    </main>
+    <footer>
+      <p>&copy; 2025 K's Bucherregal - Alle Rechte vorbehalten.</p>
+      <p>
+      <a href="mailto:kenshima0o0@gmail.com">Kontakt</a>|
+      <a href="#top">Nach oben</a>|
+      <a href="impressum.html">Impressum</a>
+      </p>
+    </footer> 
+  </body>
+</html>

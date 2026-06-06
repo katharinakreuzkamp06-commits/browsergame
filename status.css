@@ -1,0 +1,48 @@
+h1 {  
+  font-size: 60px;
+  display: block;
+  background: #a9b388;
+  padding: 7px;
+  margin: -1%;
+  width: 100vw;
+  color: #a9b388 ;
+  font-family: "Akronim", cursive;
+  -webkit-text-stroke: 2px white;
+  text-align: center;
+ }
+
+ body{
+    background: #fefae0;
+    font-family:sans-serif;
+    color: #783d19;
+ }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid  #783d19;
+    text-align: left;
+}
+
+th {
+    background-color: #b99470;
+    font-weight: bold;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #fefae0;
+}
+
+select{
+  font-family:sans-serif;
+  background-color: #fefae0; 
+  border: none; 
+  color: #783d19;
+  font-size: medium;
+}
