@@ -9,7 +9,9 @@ const inputTitel = document.getElementById("buchTitel");
 const inputGelesen = document.getElementById("buchGelesen");
 const inputLoeschTitel = document.getElementById("buchTitelLoeschen");
 
-const regalDiv = document.getElementById("regalBuecher");
+const fach1 = document.getElementById("fach1");
+const fach2 = document.getElementById("fach2");
+const fach3 = document.getElementById("fach3");
 const formHinzufuegen = document.getElementById("hinzufuegenForm");
 const loeschenForm = document.getElementById("loeschenForm");
 
@@ -67,7 +69,7 @@ async function updateRegal() {
   }
 
   // Bücher neu zeichnen
-  buecher.forEach(buch => {
+  buecher.forEach(buch, index) => {
     const div = document.createElement("div");
     div.classList.add("buchIcon");
 
@@ -96,7 +98,13 @@ async function updateRegal() {
       }
     });
 
-    regalDiv.appendChild(div);
+    if (index < 20) {
+    fach1.appendChild(div);
+} else if (index < 40) {
+    fach2.appendChild(div);
+} else {
+    fach3.appendChild(div);
+}
   });
 
   updateZaehler(buecher);

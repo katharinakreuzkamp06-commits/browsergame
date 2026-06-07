@@ -139,78 +139,79 @@ background-color: white;
   display: block;
 }
 
+/* =========================
+   REGAL
+   ========================= */
+
 #regalWrapper {
     position: relative;
     width: 90%;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 40px auto;
 }
 
-/*Regalbild*/
 #regalBild {
     width: 100%;
     height: auto;
     display: block;
 }
 
-/*Bücher-Container*/
-#regalBuecher {
+/* Regalböden */
+.regalfach {
     position: absolute;
-
-    left: 8%;
-    top: 22%;
-
-    width: 82%;
-    height: 55%;
+    left: 6%;
+    width: 88%;
 
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: flex-end;
 
+    gap: 2px;
     z-index: 5;
 }
 
+/* Oberes Regal */
+#fach1 {
+    top: 8%;
+    height: 24%;
+}
+
+/* Mittleres Regal */
+#fach2 {
+    top: 39%;
+    height: 24%;
+}
+
+/* Unteres Regal */
+#fach3 {
+    top: 70%;
+    height: 24%;
+}
+
+/* Bücher */
+
 .buchIcon {
-  writing-mode: vertical-rl;
-    transform: rotate(180deg);   
-    height: auto;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+
+    width: clamp(30px, 4vw, 55px);
+    min-height: clamp(80px, 12vw, 180px);
+
     display: flex;
     align-items: flex-end;
     justify-content: center;
+
     border-radius: 5px;
     border: 2px solid #5a2f1f;
-    font-size: 10px;
-    text-align: left;
-    padding-bottom: 6px;
-    padding-top: 6px;
-    padding-left: 12px;
+
+    padding: 6px;
     box-sizing: border-box;
-    font-size: medium;
-    overflow: hidden;
-    text-orientation: mixed;
-    width: clamp(30px, 6vw, 60px);
 
-    min-height: clamp(80px, 15vw, 160px);
-
-    font-size: clamp(10px, 1.5vw, 18px);
-}
-
-
-.buchIcon span {
-    display: inline-block;
-    white-space: nowrap;
-    line-height: 1;
-    font-size: 16px;            
-    transform-origin: center;
-    padding: 0 2px;
-}
-
-.buch span {
-    display: inline-block;
-    max-height: 100%;
-    font-size: 20px;               
-    line-height: 1.2;
     text-align: center;
+    overflow: hidden;
+
+    font-size: clamp(10px, 1vw, 16px);
+    text-orientation: mixed;
 }
 
 .buchIcon.gelesen {
@@ -223,11 +224,17 @@ background-color: white;
     color: #783d19;
 }
 
-footer{
-  text-align: center;
-  position: relative; /* kein z-index nötig */
-  padding: 20px;
- font-family: sans-serif;
- color: black;
- padding-bottom: 200px;
+/* Handy */
+
+@media (max-width: 600px) {
+
+    #regalWrapper {
+        width: 98%;
+    }
+
+    .buchIcon {
+        width: 28px;
+        min-height: 70px;
+        font-size: 10px;
+    }
 }
