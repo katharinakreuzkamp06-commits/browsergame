@@ -1,5 +1,5 @@
 async function ladeBuecher() {
-  const res = await fetch("/");
+  const res = await fetch("/api/books");
   return res.json();
 }
 
@@ -38,7 +38,6 @@ async function tabelleAufbauen() {
 
     tdStatus.appendChild(select);
     tr.append(tdTitel, tdStatus);
-    tbody.append(tdTitel, tdStatus);
     tbody.appendChild(tr);
   });
 }

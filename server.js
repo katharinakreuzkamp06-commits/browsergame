@@ -43,6 +43,18 @@ app.post("/api/updateStatus", async (req, res) => {
   res.json({ ok: true });
 });
 
+app.post("/api/deleteByTitle", async (req, res) => {
+  const result = await col().deleteOne({
+    titel: req.body.titel
+  });
+
+  if (result.deletedCount === 0) {
+    return res.status(404).json({ ok: false });
+  }
+
+  res.json({ ok: true });
+});
+
 async function start() {
   try {
     await client.connect();
@@ -59,3 +71,4 @@ async function start() {
 }
 
 start();
+
