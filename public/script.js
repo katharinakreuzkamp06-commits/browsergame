@@ -32,10 +32,50 @@ document.getElementById("btnLoeschenSchliessen").addEventListener("click", () =>
   popupLoeschen.style.display = "none";
 });
 
-async function getBuecher() {
-  const res = await fetch("/");
+  async function getBuecher() {
+  const res = await fetch("/api/books"); // ❗ wichtig
   return res.json();
 }
+
+async function addBook(data) {
+  return fetch("/addBook", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+}
+
+async function deleteBook(id) {
+  return fetch("/deleteBook", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id })
+  });
+}
+
+async function deleteByTitle(titel) {
+  return fetch("/deleteByTitle", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ titel })
+  });
+}
+
+async function updateStatus(id, gelesen) {
+  return fetch("/updateStatus", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, gelesen })
+  });
+}
+  if (!res.ok) {
+    console.error("Fehler beim Laden der Bücher");
+    return []; // Falls Serverfehler, leeres Array zurückgeben, damit es nicht abstürzt
+  }
+  
+  return res.json();
+
+
 
 async function updateRegal() {
   const buecher = await getBuecher();
