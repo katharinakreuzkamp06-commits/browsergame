@@ -1,6 +1,3 @@
-app.get("/test", (req, res) => {
-  res.send("NEUER SERVER AKTIV");
-});
 const express = require("express");
 const path = require("path");
 const mongodb = require("mongodb");
@@ -46,15 +43,19 @@ app.post("/api/updateStatus", async (req, res) => {
   res.json({ ok: true });
 });
 
-// 🔥 START SERVER (WICHTIG für Render)
 async function start() {
-  await client.connect();
-  console.log("MongoDB verbunden");
+  try {
+    await client.connect();
+    console.log("MongoDB verbunden");
 
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log("Server läuft auf Port", PORT);
-  });
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log("Server läuft auf Port", PORT);
+    });
+
+  } catch (err) {
+    console.error("MongoDB Fehler:", err);
+  }
 }
 
 start();
