@@ -1,3 +1,6 @@
+app.get("/test", (req, res) => {
+  res.send("NEUER SERVER AKTIV");
+});
 const express = require("express");
 const path = require("path");
 const mongodb = require("mongodb");
