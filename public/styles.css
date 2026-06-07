@@ -188,6 +188,13 @@ background-color: white;
     font-size: medium;
     overflow: hidden;
     text-orientation: mixed;
+    .buchIcon {
+    width: clamp(30px, 6vw, 60px);
+
+    min-height: clamp(80px, 15vw, 160px);
+
+    font-size: clamp(10px, 1.5vw, 18px);
+}
 }
 
 .buchIcon span {
