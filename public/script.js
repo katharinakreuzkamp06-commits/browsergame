@@ -11,79 +11,62 @@ const inputLoeschTitel = document.getElementById("buchTitelLoeschen");
 
 const regalDiv = document.getElementById("regalBuecher");
 const formHinzufuegen = document.getElementById("hinzufuegenForm");
-const loeschenForm =document.getElementById("loeschenForm");
+const loeschenForm = document.getElementById("loeschenForm");
 
 const btnStatus = document.querySelector(".status");
 
-btnStatus.addEventListener("click",() =>
-  {window.location.href = "status.html";});
+// Status-Button Weiterleitung
+if (btnStatus) {
+  btnStatus.addEventListener("click", () => {
+    window.location.href = "status.html";
+  });
+}
 
-document.querySelector(".neuesBuch").onclick = () =>
+// Popups öffnen und schließen
+document.querySelector(".neuesBuch").onclick = () => {
   popupHinzufuegen.style.display = "block";
+};
 
 document.getElementById("btnSchliessen").addEventListener("click", () => {
   popupHinzufuegen.style.display = "none";
 });
 
-document.querySelector(".buchLoeschen").onclick = () =>
+document.querySelector(".buchLoeschen").onclick = () => {
   popupLoeschen.style.display = "block";
+};
 
 document.getElementById("btnLoeschenSchliessen").addEventListener("click", () => {
   popupLoeschen.style.display = "none";
 });
 
-  async function getBuecher() {
-  const res = await fetch("/api/books"); // ❗ wichtig
-  return res.json();
-}
-
-async function addBook(data) {
-  return fetch("/addBook", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-}
-
-async function deleteBook(id) {
-  return fetch("/deleteBook", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id })
-  });
-}
-
-async function deleteByTitle(titel) {
-  return fetch("/deleteByTitle", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ titel })
-  });
-}
-
-async function updateStatus(id, gelesen) {
-  return fetch("/updateStatus", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id, gelesen })
-  });
-}
-  if (!res.ok) {
-    console.error("Fehler beim Laden der Bücher");
-    return []; // Falls Serverfehler, leeres Array zurückgeben, damit es nicht abstürzt
+// BÜCHER VOM SERVER LADEN (Korrigerte Route)
+async function getBuecher() {
+  try {
+    // WICHTIG: Nicht "/" abfragen, da das HTML liefert. 
+    // Hier nutzen wir nun die korrekte API-Route deiner server.js
+    const res = await fetch("/api/books");
+    
+    if (!res.ok) {
+      throw new Error("Server-Antwort war nicht ok");
+    }
+    
+    return await res.json();
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Bücher vom Server:", error);
+    return []; // Gibt ein leeres Array zurück, damit das restliche Skript nicht abstürzt
   }
-  
-  return res.json();
+}
 
-
-
+// BÜCHERREGAL IM BACKEND UND FRONTEND UPDATEN
 async function updateRegal() {
   const buecher = await getBuecher();
 
+  // Altes Regal leeren
   while (regalDiv.firstChild) {
     regalDiv.removeChild(regalDiv.firstChild);
   }
 
+  // Bücher neu zeichnen
   buecher.forEach(buch => {
     const div = document.createElement("div");
     div.classList.add("buchIcon");
@@ -96,17 +79,21 @@ async function updateRegal() {
 
     div.textContent = buch.titel;
 
-    //Mongo-ID speichern
+    // Mongo-ID speichern
     div.dataset.id = buch._id;
 
-    //Klick = Löschen
+    // Klick auf Buch = Direktes Löschen über ID
     div.addEventListener("click", async () => {
-      await fetch("/api/deleteBook", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: div.dataset.id })
-      });
-      updateRegal();
+      try {
+        await fetch("/api/deleteBook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: div.dataset.id })
+        });
+        await updateRegal();
+      } catch (error) {
+        console.error("Fehler beim Löschen des Buches via Klick:", error);
+      }
     });
 
     regalDiv.appendChild(div);
@@ -115,11 +102,12 @@ async function updateRegal() {
   updateZaehler(buecher);
 }
 
-
+// ZÄHLER UPDATEN
 function updateZaehler(buecher) {
   const score = document.querySelector(".scores");
+  if (!score) return;
+  
   score.innerHTML = "";
-
   const gelesen = buecher.filter(b => b.gelesen === "ja").length;
 
   score.innerHTML = `
@@ -129,6 +117,7 @@ function updateZaehler(buecher) {
   `;
 }
 
+// FORMULAR: BUCH HINZUFÜGEN
 formHinzufuegen.addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -136,19 +125,24 @@ formHinzufuegen.addEventListener("submit", async e => {
   const gelesen = inputGelesen.value;
   if (!titel) return alert("Titel fehlt");
 
-  await fetch("/api/addBook", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ titel, gelesen })
-  });
+  try {
+    await fetch("/api/addBook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ titel, gelesen })
+    });
 
-  formHinzufuegen.reset();
-  popupHinzufuegen.style.display = "none";
-  updateRegal();
+    formHinzufuegen.reset();
+    popupHinzufuegen.style.display = "none";
+    await updateRegal();
+  } catch (error) {
+    console.error("Fehler beim Hinzufügen des Buches:", error);
+  }
 });
 
-loeschenForm.addEventListener("submit", async (e) => {
-  e.preventDefault(); //verhindert den Seiten-Reload
+// FORMULAR: BUCH ÜBER TITEL LÖSCHEN
+loeschenForm.addEventListener("submit", async e => {
+  e.preventDefault();
 
   const titel = inputLoeschTitel.value.trim();
   if (!titel) {
@@ -156,20 +150,23 @@ loeschenForm.addEventListener("submit", async (e) => {
     return;
   }
 
-  const res = await fetch("/api/deleteByTitle", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ titel })
-  });
+  try {
+    const res = await fetch("/api/deleteByTitle", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ titel })
+    });
 
-  if (!res.ok) {
-    alert("Buch nicht gefunden");
-    return;
+    if (!res.ok) {
+      alert("Buch nicht gefunden");
+      return;
+    }
+
+    loeschenForm.reset();
+    popupLoeschen.style.display = "none";
+    await updateRegal();
+  } catch (error) {
+    console.error("Fehler beim Löschen des Buches via Formular:", error);
   }
-
-  loeschenForm.reset();
-  popupLoeschen.style.display = "none";
-
-  await updateRegal(); //Regal, Scores neu laden
 });
 
